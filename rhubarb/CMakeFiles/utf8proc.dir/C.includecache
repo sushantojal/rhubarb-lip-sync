@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/utf8proc-2.2.0/utf8proc.c
+utf8proc.h
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/utf8proc-2.2.0/utf8proc.h
+utf8proc_data.c
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/utf8proc-2.2.0/utf8proc_data.c
+
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/utf8proc-2.2.0/utf8proc.h
+stdlib.h
+-
+stddef.h
+-
+stdbool.h
+-
+inttypes.h
+-
+limits.h
+-
+
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/utf8proc-2.2.0/utf8proc_data.c
+

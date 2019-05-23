@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/src/tools/progress.cpp
+progress.h
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/src/tools/progress.h
+mutex
+-
+
+C:/home/lip_sync/rhubarb-lip-sync/rhubarb/src/tools/progress.h
+functional
+-
+mutex
+-
+vector
+-
+memory
+-
+string
+-
+

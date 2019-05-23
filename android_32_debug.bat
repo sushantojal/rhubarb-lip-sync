@@ -1,0 +1,2 @@
+cmake --trace -G "MinGW Makefiles" -DANDROID_LINKER_FLAGS=-Wl,--exclude-libs,libunwind.a -DCMAKE_BUILD_TYPE=Release -DANDROID_ABI=arm64-v8a -DANDROID_NATIVE_API_LEVEL=android-22 -DANDROID_FORCE_ARM_BUILD=TRUE -DCMAKE_INSTALL_PREFIX=install -DANDROID_STL=c++_shared -DANDROID_STL_FORCE_FEATURES=ON -DCMAKE_TOOLCHAIN_FILE=C:\Users\sushant.o\AppData\Local\Android\Sdk\ndk-bundle\build\cmake\android.toolchain.cmake -DANDROID_TOOLCHAIN=clang
+C:\Users\sushant.o\AppData\Local\Android\Sdk\ndk-bundle\prebuilt\windows-x86_64\bin\make.exe -j12

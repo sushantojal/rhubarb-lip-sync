@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
+cmake_policy(SET CMP0074 NEW)
+
 
 include("../appInfo.cmake")
 
@@ -6,6 +8,9 @@ include("../appInfo.cmake")
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Minimum OS X deployment version")
 
 project(${appName})
+
+option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
+option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
 
 # Enable C++14
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
@@ -59,41 +64,74 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Define libraries
 
 # ... Boost
-set(Boost_USE_STATIC_LIBS ON) # Use static libs
-set(Boost_USE_MULTITHREADED ON) # Enable multithreading support
-set(Boost_USE_STATIC_RUNTIME ON) # Use static C++ runtime
-find_package(Boost 1.54 REQUIRED COMPONENTS filesystem locale system)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-link_libraries(${Boost_LIBRARIES}) # Just about every project needs Boost
+# set(Boost_USE_STATIC_LIBS ON) # Use static libs
+# set(Boost_USE_MULTITHREADED ON) # Enable multithreading support
+# set(Boost_USE_STATIC_RUNTIME ON) # Use static C++ runtime
+# FILE(GLOB_RECURSE boostHeaders "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/include/boost/*")
+# FILE(GLOB boostLibs "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/arm64-v8a/lib/*")
+# add_library(boost STATIC "lib/boost/null.cpp")
+# target_include_directories(boost PUBLIC boostHeaders)
+# target_link_libraries(boost boostLibs)
+
+# include_directories( boostHeaders)
+# link_libraries(boostLibs) # Just about every project needs Boost
+
+# include_directories( "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/include/boost/")
+# link_libraries("C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/arm64-v8a/lib/") # Just about every project needs Boost
+
+#add_library(boost STATIC "lib/boost/arm64-v8a/lib" )
+#target_include_directories(boost SYSTEM PUBLIC "lib/boost/include")
+#target_link_libraries(boost "lib/boost/arm64-v8a/lib") # Just about every project needs Boost
+
+
+
+# FILE(GLOB boostLibs "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/libs/llvm/arm64-v8a/*")
+set( boostHeaders "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/include/")
+add_library (boost_system SHARED IMPORTED)
+set_target_properties( boost_system PROPERTIES IMPORTED_LOCATION
+                    C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/libs/llvm/arm64-v8a/libboost_system.so
+                    )
+add_library (boost_filesystem SHARED IMPORTED)
+set_target_properties( boost_filesystem PROPERTIES IMPORTED_LOCATION
+                    C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/libs/llvm/arm64-v8a/libboost_filesystem.so
+                    )
+
+include_directories( "C:/home/lip_sync/rhubarb-lip-sync/rhubarb/lib/boost/include/boost/")
+link_libraries(boost_system 
+				boost_filesystem)
+
 
 # ... C++ Format
 FILE(GLOB cppFormatFiles "lib/cppformat/*.cc")
-add_library(cppFormat ${cppFormatFiles})
+add_library(cppFormat SHARED ${cppFormatFiles})
 target_include_directories(cppFormat SYSTEM PUBLIC "lib/cppformat")
-target_compile_options(cppFormat PRIVATE ${disableWarningsFlags})
+target_compile_options(cppFormat PUBLIC ${disableWarningsFlags})
 set_target_properties(cppFormat PROPERTIES FOLDER lib)
 
 # ... sphinxbase
 FILE(GLOB_RECURSE sphinxbaseFiles "lib/sphinxbase-rev13216/src/libsphinxbase/*.c")
-add_library(sphinxbase ${sphinxbaseFiles})
+add_library(sphinxbase SHARED ${sphinxbaseFiles})
 target_include_directories(sphinxbase SYSTEM PUBLIC
 	"lib/sphinxbase-rev13216/include"
 	"lib/sphinxbase-rev13216/src"
 	"lib/sphinx_config"
 )
-target_compile_options(sphinxbase PRIVATE ${disableWarningsFlags})
+target_link_libraries(sphinxbase
+                      android 
+                      log)
+target_compile_options(sphinxbase PUBLIC ${disableWarningsFlags})
 target_compile_definitions(sphinxbase PUBLIC __SPHINXBASE_EXPORT_H__=1 SPHINXBASE_EXPORT=) # Compile as static lib
 set_target_properties(sphinxbase PROPERTIES FOLDER lib)
 
 # ... PocketSphinx
 FILE(GLOB pocketSphinxFiles "lib/pocketsphinx-rev13216/src/libpocketsphinx/*.c")
-add_library(pocketSphinx ${pocketSphinxFiles})
+add_library(pocketSphinx SHARED ${pocketSphinxFiles})
 target_include_directories(pocketSphinx SYSTEM PUBLIC
 	"lib/pocketsphinx-rev13216/include"
 	"lib/pocketsphinx-rev13216/src/libpocketsphinx"
 )
 target_link_libraries(pocketSphinx sphinxbase)
-target_compile_options(pocketSphinx PRIVATE ${disableWarningsFlags})
+target_compile_options(pocketSphinx PUBLIC ${disableWarningsFlags})
 target_compile_definitions(pocketSphinx PUBLIC __POCKETSPHINX_EXPORT_H__=1 POCKETSPHINX_EXPORT=) # Compile as static lib
 set_target_properties(pocketSphinx PROPERTIES FOLDER lib)
 
@@ -101,11 +139,11 @@ set_target_properties(pocketSphinx PROPERTIES FOLDER lib)
 include_directories(SYSTEM "lib/tclap-1.2.1/include")
 
 # ... Google Test
-add_subdirectory("lib/googletest")
-set_target_properties(gmock PROPERTIES FOLDER lib)
-set_target_properties(gmock_main PROPERTIES FOLDER lib)
-set_target_properties(gtest PROPERTIES FOLDER lib)
-set_target_properties(gtest_main PROPERTIES FOLDER lib)
+# add_subdirectory("lib/googletest")
+# set_target_properties(gmock PROPERTIES FOLDER lib)
+# set_target_properties(gmock_main PROPERTIES FOLDER lib)
+# set_target_properties(gtest PROPERTIES FOLDER lib)
+# set_target_properties(gtest_main PROPERTIES FOLDER lib)
 
 # ... GSL
 include_directories(SYSTEM "lib/gsl/include")
@@ -130,19 +168,19 @@ set(webRtcFiles
 	lib/webrtc-8d2248ff/webrtc/common_audio/vad/vad_sp.c
 	lib/webrtc-8d2248ff/webrtc/common_audio/vad/webrtc_vad.c
 )
-add_library(webRtc ${webRtcFiles})
+add_library(webRtc SHARED ${webRtcFiles})
 target_include_directories(webRtc SYSTEM PUBLIC "lib/webrtc-8d2248ff")
-target_compile_options(webRtc PRIVATE ${disableWarningsFlags})
+target_compile_options(webRtc PUBLIC ${disableWarningsFlags})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  target_compile_options(webRtc PRIVATE -pthread -lpthread)
+  target_compile_options(webRtc PUBLIC -pthread -lpthread)
 endif()
 if (NOT WIN32)
-	target_compile_definitions(webRtc PRIVATE WEBRTC_POSIX)
+	target_compile_definitions(webRtc PUBLIC WEBRTC_POSIX)
 endif()
 set_target_properties(webRtc PROPERTIES FOLDER lib)
 
 # ... whereami
-add_library(whereami lib/whereami/src/whereami.c)
+add_library(whereami SHARED lib/whereami/src/whereami.c)
 target_include_directories(whereami SYSTEM PUBLIC "lib/whereami/src")
 set_target_properties(whereami PROPERTIES FOLDER lib)
 
@@ -206,45 +244,45 @@ set(fliteFiles
 	lib/flite-1.4/src/utils/cst_val_user.c
 	lib/flite-1.4/src/utils/cst_val_user.c
 )
-add_library(flite ${fliteFiles})
+add_library(flite SHARED ${fliteFiles})
 target_include_directories(flite SYSTEM PUBLIC
 	"lib/flite-1.4/include"
 	"lib/flite-1.4"
 )
-target_compile_options(flite PRIVATE ${disableWarningsFlags})
+target_compile_options(flite PUBLIC ${disableWarningsFlags})
 set_target_properties(flite PROPERTIES FOLDER lib)
 
 # ... UTF8-CPP
-add_library(utfcpp
+add_library(utfcpp SHARED
 	lib/header-only.c
 	lib/utfcpp-2.3.5/source/utf8.h
 )
 target_include_directories(utfcpp SYSTEM PUBLIC "lib/utfcpp-2.3.5/source")
-target_compile_options(utfcpp PRIVATE ${disableWarningsFlags})
+target_compile_options(utfcpp PUBLIC ${disableWarningsFlags})
 set_target_properties(utfcpp PROPERTIES FOLDER lib)
 
 # ... utf8proc
-add_library(utf8proc
+add_library(utf8proc SHARED
 	lib/utf8proc-2.2.0/utf8proc.c
 	lib/utf8proc-2.2.0/utf8proc.h
 )
 target_include_directories(utf8proc SYSTEM PUBLIC "lib/utf8proc-2.2.0")
-target_compile_options(utf8proc PRIVATE ${disableWarningsFlags})
+target_compile_options(utf8proc PUBLIC ${disableWarningsFlags})
 target_compile_definitions(utf8proc PUBLIC UTF8PROC_STATIC=1) # Compile as static lib
 set_target_properties(utf8proc PROPERTIES FOLDER lib)
 
 # ... Ogg
-add_library(ogg
+add_library(ogg SHARED
 	lib/ogg-1.3.3/include/ogg/ogg.h
 	lib/ogg-1.3.3/src/bitwise.c
 	lib/ogg-1.3.3/src/framing.c
 )
 target_include_directories(ogg SYSTEM PUBLIC "lib/ogg-1.3.3/include")
-target_compile_options(ogg PRIVATE ${disableWarningsFlags})
+target_compile_options(ogg PUBLIC ${disableWarningsFlags})
 set_target_properties(ogg PROPERTIES FOLDER lib)
 
 # ... Vorbis
-add_library(vorbis
+add_library(vorbis SHARED
 	lib/vorbis-1.3.6/include/vorbis/vorbisfile.h
 	lib/vorbis-1.3.6/lib/bitrate.c
 	lib/vorbis-1.3.6/lib/block.c
@@ -270,7 +308,7 @@ target_include_directories(vorbis SYSTEM PUBLIC "lib/vorbis-1.3.6/include")
 target_link_libraries(vorbis
 	ogg
 )
-target_compile_options(vorbis PRIVATE ${disableWarningsFlags})
+target_compile_options(vorbis PUBLIC ${disableWarningsFlags})
 set_target_properties(vorbis PROPERTIES FOLDER lib)
 
 # Define Rhubarb libraries
@@ -278,7 +316,7 @@ set_target_properties(vorbis PROPERTIES FOLDER lib)
 include_directories("src")
 
 # ... rhubarb-animation
-add_library(rhubarb-animation
+add_library(rhubarb-animation SHARED
 	src/animation/animationRules.cpp
 	src/animation/animationRules.h
 	src/animation/mouthAnimation.cpp
@@ -299,7 +337,7 @@ add_library(rhubarb-animation
 	src/animation/tweening.cpp
 	src/animation/tweening.h
 )
-target_include_directories(rhubarb-animation PRIVATE "src/animation")
+target_include_directories(rhubarb-animation PUBLIC "src/animation" ${boostHeaders})
 target_link_libraries(rhubarb-animation
 	rhubarb-core
 	rhubarb-logging
@@ -307,7 +345,7 @@ target_link_libraries(rhubarb-animation
 )
 
 # ... rhubarb-audio
-add_library(rhubarb-audio
+add_library(rhubarb-audio SHARED
 	src/audio/AudioClip.cpp
 	src/audio/AudioClip.h
 	src/audio/audioFileReading.cpp
@@ -330,18 +368,19 @@ add_library(rhubarb-audio
 	src/audio/waveFileWriting.cpp
 	src/audio/waveFileWriting.h
 )
-target_include_directories(rhubarb-audio PRIVATE "src/audio")
+target_include_directories(rhubarb-audio PUBLIC "src/audio" ${boostHeaders})
 target_link_libraries(rhubarb-audio
 	webRtc
 	vorbis
 	rhubarb-logging
 	rhubarb-time
 	rhubarb-tools
+	
 )
 
 # ... rhubarb-core
 configure_file(src/core/appInfo.cpp.in appInfo.cpp ESCAPE_QUOTES)
-add_library(rhubarb-core
+add_library(rhubarb-core SHARED
 	${CMAKE_CURRENT_BINARY_DIR}/appInfo.cpp
 	src/core/appInfo.h
 	src/core/Phone.cpp
@@ -349,13 +388,14 @@ add_library(rhubarb-core
 	src/core/Shape.cpp
 	src/core/Shape.h
 )
-target_include_directories(rhubarb-core PRIVATE "src/core")
+target_include_directories(rhubarb-core PUBLIC "src/core" ${boostHeaders})
 target_link_libraries(rhubarb-core
 	rhubarb-tools
+	
 )
 
 # ... rhubarb-exporters
-add_library(rhubarb-exporters
+add_library(rhubarb-exporters SHARED
 	src/exporters/Exporter.h
 	src/exporters/exporterTools.cpp
 	src/exporters/exporterTools.h
@@ -366,19 +406,20 @@ add_library(rhubarb-exporters
 	src/exporters/XmlExporter.cpp
 	src/exporters/XmlExporter.h
 )
-target_include_directories(rhubarb-exporters PRIVATE "src/exporters")
+target_include_directories(rhubarb-exporters PUBLIC "src/exporters" ${boostHeaders})
 target_link_libraries(rhubarb-exporters
 	rhubarb-animation
 	rhubarb-core
 	rhubarb-time
+	
 )
 
 # ... rhubarb-lib
-add_library(rhubarb-lib
+add_library(rhubarb-lib SHARED
 	src/lib/rhubarbLib.cpp
 	src/lib/rhubarbLib.h
 )
-target_include_directories(rhubarb-lib PRIVATE "src/lib")
+target_include_directories(rhubarb-lib PUBLIC "src/lib" ${boostHeaders})
 target_link_libraries(rhubarb-lib
 	rhubarb-animation
 	rhubarb-audio
@@ -386,10 +427,11 @@ target_link_libraries(rhubarb-lib
 	rhubarb-recognition
 	rhubarb-time
 	rhubarb-tools
+	
 )
 
 # ... rhubarb-logging
-add_library(rhubarb-logging
+add_library(rhubarb-logging SHARED
 	src/logging/Entry.cpp
 	src/logging/Entry.h
 	src/logging/Formatter.h
@@ -403,13 +445,14 @@ add_library(rhubarb-logging
 	src/logging/sinks.cpp
 	src/logging/sinks.h
 )
-target_include_directories(rhubarb-logging PRIVATE "src/logging")
+target_include_directories(rhubarb-logging PUBLIC "src/logging" ${boostHeaders})
 target_link_libraries(rhubarb-logging
 	rhubarb-tools
+	
 )
 
 # ... rhubarb-recognition
-add_library(rhubarb-recognition
+add_library(rhubarb-recognition SHARED
 	src/recognition/g2p.cpp
 	src/recognition/g2p.h
 	src/recognition/languageModels.cpp
@@ -424,17 +467,18 @@ add_library(rhubarb-recognition
 	src/recognition/tokenization.cpp
 	src/recognition/tokenization.h
 )
-target_include_directories(rhubarb-recognition PRIVATE "src/recognition")
+target_include_directories(rhubarb-recognition PUBLIC "src/recognition" ${boostHeaders})
 target_link_libraries(rhubarb-recognition
 	flite
 	pocketSphinx
 	rhubarb-audio
 	rhubarb-core
 	rhubarb-logging
+	
 )
 
 # ... rhubarb-time
-add_library(rhubarb-time
+add_library(rhubarb-time SHARED
 	src/time/BoundedTimeline.h
 	src/time/centiseconds.cpp
 	src/time/centiseconds.h
@@ -445,14 +489,15 @@ add_library(rhubarb-time
 	src/time/TimeRange.cpp
 	src/time/TimeRange.h
 )
-target_include_directories(rhubarb-time PRIVATE "src/time")
+target_include_directories(rhubarb-time PUBLIC "src/time" ${boostHeaders})
 target_link_libraries(rhubarb-time
 	cppFormat
 	rhubarb-logging
+	
 )
 
 # ... rhubarb-tools
-add_library(rhubarb-tools
+add_library(rhubarb-tools SHARED
 	src/tools/array.h
 	src/tools/EnumConverter.h
 	src/tools/exceptions.cpp
@@ -482,16 +527,17 @@ add_library(rhubarb-tools
 	src/tools/tools.h
 	src/tools/tupleHash.h
 )
-target_include_directories(rhubarb-tools PRIVATE "src/tools")
+target_include_directories(rhubarb-tools PUBLIC "src/tools" ${boostHeaders})
 target_link_libraries(rhubarb-tools
 	cppFormat
 	whereami
 	utfcpp
 	utf8proc
+	
 )
 
 # Define Rhubarb executable
-add_executable(rhubarb
+add_library(rhubarb SHARED
 	src/rhubarb/main.cpp
 	src/rhubarb/ExportFormat.cpp
 	src/rhubarb/ExportFormat.h
@@ -502,64 +548,65 @@ add_executable(rhubarb
 	src/rhubarb/sinks.cpp
 	src/rhubarb/sinks.h
 )
-target_include_directories(rhubarb PUBLIC "src/rhubarb")
+target_include_directories(rhubarb PUBLIC "src/rhubarb" ${boostHeaders})
 target_link_libraries(rhubarb
 	rhubarb-exporters
 	rhubarb-lib
+	
 )
 target_compile_options(rhubarb PUBLIC ${enableWarningsFlags})
 
 # Define test project
 #include_directories("${gtest_SOURCE_DIR}/include")
-set(TEST_FILES
-	tests/stringToolsTests.cpp
-	tests/TimelineTests.cpp
-	tests/BoundedTimelineTests.cpp
-	tests/ContinuousTimelineTests.cpp
-	tests/pairsTests.cpp
-	tests/tokenizationTests.cpp
-	tests/g2pTests.cpp
-	tests/LazyTests.cpp
-)
-add_executable(runTests ${TEST_FILES})
-target_link_libraries(runTests
-	gtest
-	gmock
-	gmock_main
-	rhubarb-recognition
-	rhubarb-time
-)
+# set(TEST_FILES
+	# tests/stringToolsTests.cpp
+	# tests/TimelineTests.cpp
+	# tests/BoundedTimelineTests.cpp
+	# tests/ContinuousTimelineTests.cpp
+	# tests/pairsTests.cpp
+	# tests/tokenizationTests.cpp
+	# tests/g2pTests.cpp
+	# tests/LazyTests.cpp
+# )
+# add_executable(runTests ${TEST_FILES})
+# target_link_libraries(runTests
+	# gtest
+	# gmock
+	# gmock_main
+	# rhubarb-recognition
+	# rhubarb-time
+# )
 
 # Copies the specified files in a post-build event, then installs them
-function(copy_and_install sourceGlob relativeTargetDirectory)
+# function(copy_and_install sourceGlob relativeTargetDirectory)
 	# Set `sourcePaths`
-	file(GLOB sourcePaths "${sourceGlob}")
+	# file(GLOB sourcePaths "${sourceGlob}")
 	
-	foreach(sourcePath ${sourcePaths})
-		if(NOT IS_DIRECTORY ${sourcePath})
-			# Set `fileName`
-			get_filename_component(fileName "${sourcePath}" NAME)
+	# foreach(sourcePath ${sourcePaths})
+		# if(NOT IS_DIRECTORY ${sourcePath})
+			## Set `fileName`
+			# get_filename_component(fileName "${sourcePath}" NAME)
 
-			# Copy file during build
-			add_custom_command(TARGET rhubarb POST_BUILD
-				COMMAND ${CMAKE_COMMAND} -E copy "${sourcePath}" "$<TARGET_FILE_DIR:rhubarb>/${relativeTargetDirectory}/${fileName}"
-				COMMENT "Creating '${relativeTargetDirectory}/${fileName}'"
-			)
+			## Copy file during build
+			# add_custom_command(TARGET rhubarb POST_BUILD
+				# COMMAND ${CMAKE_COMMAND} -E copy "${sourcePath}" "$<TARGET_FILE_DIR:rhubarb>/${relativeTargetDirectory}/${fileName}"
+				# COMMENT "Creating '${relativeTargetDirectory}/${fileName}'"
+			# )
 
-			# Install file
-			install(
-				FILES "${sourcePath}"
-				DESTINATION "${relativeTargetDirectory}"
-			)
-		endif()
-	endforeach()
-endfunction()
+			## Install file
+			# install(
+				# FILES "${sourcePath}"
+				# DESTINATION "${relativeTargetDirectory}"
+			# )
+		# endif()
+	# endforeach()
+# endfunction()
 
-copy_and_install("lib/pocketsphinx-rev13216/model/en-us/*" "res/sphinx")
-copy_and_install("lib/cmusphinx-en-us-5.2/*" "res/sphinx/acoustic-model")
+# copy_and_install("lib/pocketsphinx-rev13216/model/en-us/*" "res/sphinx")
+# copy_and_install("lib/cmusphinx-en-us-5.2/*" "res/sphinx/acoustic-model")
 
-install(
-	TARGETS rhubarb
-	RUNTIME
-	DESTINATION .
-)
+# install(
+	# TARGETS rhubarb
+	# RUNTIME
+	# DESTINATION .
+# )

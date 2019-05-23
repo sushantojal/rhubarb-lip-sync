@@ -1,7 +1,7 @@
 #include "progress.h"
 
 #include <mutex>
-#include "logging/logging.h"
+// #include "logging/logging.h"
 
 using std::string;
 
@@ -20,11 +20,11 @@ ProgressMerger::ProgressMerger(ProgressSink& sink) :
 ProgressMerger::~ProgressMerger() {
 	for (const auto& source : sources) {
 		if (source.progress < 1.0) {
-			logging::debugFormat(
-				"Progress merger source '{}' never reached 1.0, but stopped at {}.",
-				source.description,
-				source.progress
-			);
+			// logging::debugFormat(
+				// "Progress merger source '{}' never reached 1.0, but stopped at {}.",
+				// source.description,
+				// source.progress
+			// );
 		}
 	}
 }

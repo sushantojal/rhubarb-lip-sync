@@ -16,10 +16,10 @@ static lambda_unique_ptr<ps_decoder_t> createDecoder(optional<std::string> dialo
 	lambda_unique_ptr<cmd_ln_t> config(
 		cmd_ln_init(
 			nullptr, ps_args(), true,
-			// Set acoustic model
-			"-hmm", (getSphinxModelDirectory() / "acoustic-model").string().c_str(),
-			// Set phonetic language model
-			"-allphone", (getSphinxModelDirectory() / "en-us-phone.lm.bin").string().c_str(),
+			// Set acoustic model sushant
+			"-hmm", "/mnt/sdcard/res/sphinx/acoustic-model",
+			// Set phonetic language model sushant
+			"-allphone", "/mnt/sdcard/res/sphinx/en-us-phone.lm.bin",
 			"-allphone_ci", "yes",
 			// Set language model probability weight.
 			// Low values (<= 0.4) can lead to fluttering animation.

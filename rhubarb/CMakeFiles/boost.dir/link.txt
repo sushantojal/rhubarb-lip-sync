@@ -1,0 +1,2 @@
+C:/Users/sushant.o/AppData/Local/Android/Sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/windows-x86_64/bin/aarch64-linux-android-ar.exe qc libboost.a  CMakeFiles/boost.dir/lib/boost/null.cpp.o
+C:/Users/sushant.o/AppData/Local/Android/Sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/windows-x86_64/bin/aarch64-linux-android-ranlib.exe libboost.a
