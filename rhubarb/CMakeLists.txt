@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
+cmake_policy(SET CMP0074 NEW)
+
 
 include("../appInfo.cmake")
 
@@ -6,6 +8,9 @@ include("../appInfo.cmake")
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "Minimum OS X deployment version")
 
 project(${appName})
+
+option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
+option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
 
 # Enable C++14
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
@@ -58,11 +63,17 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Define libraries
 
+# need to have boost prebuilt for windows. 
+# create static libraries by:
+	# bootstrap.bat
+	# b2 link=static runtime-link=static release stage
+# set BOOST_INCLUDEDIR, BOOST_ROOT and BOOST_LIBRARYDIR
+
 # ... Boost
 set(Boost_USE_STATIC_LIBS ON) # Use static libs
 set(Boost_USE_MULTITHREADED ON) # Enable multithreading support
 set(Boost_USE_STATIC_RUNTIME ON) # Use static C++ runtime
-find_package(Boost 1.54 REQUIRED COMPONENTS filesystem locale system)
+find_package(Boost 1.70 REQUIRED COMPONENTS filesystem locale system)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 link_libraries(${Boost_LIBRARIES}) # Just about every project needs Boost
 

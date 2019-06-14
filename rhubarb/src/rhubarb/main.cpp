@@ -243,6 +243,8 @@ int main(int platformArgc, char* platformArgv[]) {
 				targetShapeSet,
 				maxThreadCount.getValue(),
 				progressSink);
+
+
 			logging::info("Done animating.");
 
 			// Export animation
