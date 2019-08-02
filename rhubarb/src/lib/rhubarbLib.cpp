@@ -41,11 +41,10 @@ JoiningContinuousTimeline<Shape> animateAudioClip(
 	const BoundedTimeline<Phone> phones =
 		recognizer.recognizePhones(audioClip, dialog, maxThreadCount, progressSink);
 
+	//adding to export phoneme information
 	phonemes_ts = phones;
 
 	JoiningContinuousTimeline<Shape> result = animate(phones, targetShapeSet);
-
-	getPhonemeTimestamps();
 	return result;
 }
 
