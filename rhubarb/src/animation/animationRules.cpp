@@ -104,8 +104,101 @@ Timeline<ShapeSet> getShapeSets(Phone phone, centiseconds duration, centiseconds
 		return getShapeSets(referencePhone, duration, previousDuration);
 	};
 
-	static const ShapeSet any { A, B, C, D, E, F, G, H, X };
-	static const ShapeSet anyOpen { B, C, D, E, F, G, H };
+	static const ShapeSet any { S,
+	V2,
+	V3,
+	V4,
+	V5,
+	V6,
+	V7,
+	V8,
+	V9,
+	V10,
+	V11,
+	V12,
+	V13,
+	V14,
+	V15,
+	V16 };
+
+	static const ShapeSet anyOpen {
+	V2,
+	V3,
+	V4,
+	V5,
+	V6,
+	V7,
+	V8,
+	V9,
+	V10,
+	V11,
+	V12,
+	V13,
+	V14,
+	V15 };
+
+	switch (phone) {
+	case Phone::AO: return single({ V7 });
+	case Phone::AA: return single({ V7 });
+	case Phone::IY: return single({ V5 });
+	case Phone::UW: return single({ V6 });
+	case Phone::EH: return single({ V3 });
+	case Phone::IH: return single({ V5 });
+	case Phone::UH: return single({ V6 });
+	case Phone::AH: return single({ V2 });
+	case Phone::Schwa: return single({ V5 });   //schwa is AX in ARPABET
+	case Phone::AE: return single({ V3 });
+	case Phone::EY: return single({ V3 });
+	case Phone::AY: return single({ V2 });
+	case Phone::OW: return single({ V7 });
+	case Phone::AW: return single({ V8 });
+	case Phone::OY: return single({ V7 });
+	case Phone::ER: return single({ V4 });
+
+	case Phone::M:
+	case Phone::P:
+	case Phone::B: return single({ V16 });
+	case Phone::F:
+	case Phone::V: return single({ V15 });
+	case Phone::TH:
+	case Phone::DH: return single({ V14 });
+
+	case Phone::CH:
+	case Phone::JH: 
+	case Phone::SH:
+	case Phone::ZH: return single({ V13 });
+
+	case Phone::S:
+	case Phone::Z: return single({ V12 });
+
+	case Phone::L: 
+	case Phone::D: 
+	case Phone::T:
+	case Phone::N: return single({ V11 });
+
+	case Phone::R: return single({ V10 });
+
+	case Phone::K:
+	case Phone::G: 
+	case Phone::HH: 
+	case Phone::NG: return single({ V9 });
+
+
+	case Phone::Y: return single({ V5 });
+	case Phone::W: return single({ V6 });
+
+	case Phone::Breath:
+	case Phone::Cough:
+	case Phone::Smack: return single({ V3 });
+	case Phone::Noise: return single({ V5 });
+
+	default: throw std::invalid_argument("Unexpected phone.");
+	}
+
+
+
+
+
 
 	// Note:
 	// The shapes {A, B, G, X} are very similar. You should avoid regular shape sets containing more
@@ -113,54 +206,54 @@ Timeline<ShapeSet> getShapeSets(Phone phone, centiseconds duration, centiseconds
 	// Otherwise, the resulting shape may be more or less random and might not be a good fit.
 	// As an exception, a very flexible rule may contain *all* these shapes.
 
-	switch (phone) {
-		case Phone::AO: return single({ E });
-		case Phone::AA: return single({ D });
-		case Phone::IY: return single({ B });
-		case Phone::UW: return single({ F });
-		case Phone::EH: return single({ C });
-		case Phone::IH: return single({ B });
-		case Phone::UH: return single({ F });
-		case Phone::AH: return duration < 20_cs ? single({ C }) : single({ D });
-		case Phone::Schwa: return single({ B, C });
-		case Phone::AE: return single({ C });
-		case Phone::EY: return diphthong({ C }, { B });
-		case Phone::AY: return duration < 20_cs ? diphthong({ C }, { B }) : diphthong({ D }, { B });
-		case Phone::OW: return single({ F });
-		case Phone::AW: return duration < 30_cs ? diphthong({ C }, { E }) : diphthong({ D }, { E });
-		case Phone::OY: return diphthong({ E }, { B });
-		case Phone::ER: return duration < 7_cs ? like(Phone::Schwa) : single({ E });
+	//switch (phone) {
+	//	case Phone::AO: return single({ E });
+	//	case Phone::AA: return single({ D });
+	//	case Phone::IY: return single({ B });
+	//	case Phone::UW: return single({ F });
+	//	case Phone::EH: return single({ C });
+	//	case Phone::IH: return single({ B });
+	//	case Phone::UH: return single({ F });
+	//	case Phone::AH: return duration < 20_cs ? single({ C }) : single({ D });
+	//	case Phone::Schwa: return single({ B, C });
+	//	case Phone::AE: return single({ C });
+	//	case Phone::EY: return diphthong({ C }, { B });
+	//	case Phone::AY: return duration < 20_cs ? diphthong({ C }, { B }) : diphthong({ D }, { B });
+	//	case Phone::OW: return single({ F });
+	//	case Phone::AW: return duration < 30_cs ? diphthong({ C }, { E }) : diphthong({ D }, { E });
+	//	case Phone::OY: return diphthong({ E }, { B });
+	//	case Phone::ER: return duration < 7_cs ? like(Phone::Schwa) : single({ E });
 
-		case Phone::P:
-		case Phone::B: return plosive({ A }, any);
-		case Phone::T:
-		case Phone::D: return plosive({ B, F }, anyOpen);
-		case Phone::K:
-		case Phone::G: return plosive({ B, C, E, F, H }, anyOpen);
-		case Phone::CH:
-		case Phone::JH: return single({ B, F });
-		case Phone::F:
-		case Phone::V: return single({ G });
-		case Phone::TH:
-		case Phone::DH:
-		case Phone::S:
-		case Phone::Z:
-		case Phone::SH:
-		case Phone::ZH: return single({ B, F });
-		case Phone::HH: return single(any); // think "m-hm"
-		case Phone::M: return single({ A });
-		case Phone::N: return single({ B, C, F, H });
-		case Phone::NG: return single({ B, C, E, F });
-		case Phone::L: return duration < 20_cs ? single({ B, E, F, H }) : single({ H });
-		case Phone::R: return single({ B, E, F });
-		case Phone::Y: return single({ B, C, F });
-		case Phone::W: return single({ F });
+	//	case Phone::P:
+	//	case Phone::B: return plosive({ A }, any);
+	//	case Phone::T:
+	//	case Phone::D: return plosive({ B, F }, anyOpen);
+	//	case Phone::K:
+	//	case Phone::G: return plosive({ B, C, E, F, H }, anyOpen);
+	//	case Phone::CH:
+	//	case Phone::JH: return single({ B, F });
+	//	case Phone::F:
+	//	case Phone::V: return single({ G });
+	//	case Phone::TH:
+	//	case Phone::DH:
+	//	case Phone::S:
+	//	case Phone::Z:
+	//	case Phone::SH:
+	//	case Phone::ZH: return single({ B, F });
+	//	case Phone::HH: return single(any); // think "m-hm"
+	//	case Phone::M: return single({ A });
+	//	case Phone::N: return single({ B, C, F, H });
+	//	case Phone::NG: return single({ B, C, E, F });
+	//	case Phone::L: return duration < 20_cs ? single({ B, E, F, H }) : single({ H });
+	//	case Phone::R: return single({ B, E, F });
+	//	case Phone::Y: return single({ B, C, F });
+	//	case Phone::W: return single({ F });
 
-		case Phone::Breath:
-		case Phone::Cough:
-		case Phone::Smack: return single({ C });
-		case Phone::Noise: return single({ B });
+	//	case Phone::Breath:
+	//	case Phone::Cough:
+	//	case Phone::Smack: return single({ C });
+	//	case Phone::Noise: return single({ B });
 
-		default: throw std::invalid_argument("Unexpected phone.");
-	}
+	//	default: throw std::invalid_argument("Unexpected phone.");
+	//}
 }

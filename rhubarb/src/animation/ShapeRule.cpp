@@ -55,7 +55,9 @@ ContinuousTimeline<ShapeRule> getShapeRules(const BoundedTimeline<Phone>& phones
 	// Create timeline of shape rules
 	ContinuousTimeline<ShapeRule> shapeRules(
 		phones.getRange(),
-		{ { Shape::X }, boost::none, { 0_cs, 0_cs } }
+		//viseme: default shape
+		//{ { Shape::X }, boost::none, { 0_cs, 0_cs } }
+		{ { Shape::S }, boost::none, { 0_cs, 0_cs } }
 	);
 	centiseconds previousDuration = 0_cs;
 	for (const auto& timedPhone : continuousPhones) {

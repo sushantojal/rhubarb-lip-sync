@@ -18,7 +18,9 @@ JoiningContinuousTimeline<Shape> animate(
 	// Modify shape rules to only contain allowed shapes -- plus X, which is needed for pauses and
 	// will be replaced later
 	ShapeSet targetShapeSetPlusX = targetShapeSet;
-	targetShapeSetPlusX.insert(Shape::X);
+	
+	//visemes: no need for X
+	//targetShapeSetPlusX.insert(Shape::X);
 	shapeRules = convertToTargetShapeSet(shapeRules, targetShapeSetPlusX);
 
 	// Animate in multiple steps

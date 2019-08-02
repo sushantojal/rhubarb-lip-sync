@@ -99,11 +99,12 @@ ShapeSet getTargetShapeSet(const string& extendedShapesString) {
 	// All basic shapes are mandatory
 	ShapeSet result(ShapeConverter::get().getBasicShapes());
 
-	// Add any extended shapes
-	for (char ch : extendedShapesString) {
-		Shape shape = ShapeConverter::get().parse(string(1, ch));
-		result.insert(shape);
-	}
+	//visemes : no extended shapes
+	//// Add any extended shapes
+	//for (char ch : extendedShapesString) {
+	//	Shape shape = ShapeConverter::get().parse(string(1, ch));
+	//	result.insert(shape);
+	//}
 	return result;
 }
 

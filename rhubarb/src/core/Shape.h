@@ -8,21 +8,40 @@
 // For visual examples, see https://flic.kr/s/aHsj86KR4J. Their shapes "BMP".."L" map to A..H.
 enum class Shape {
 	// Basic shapes
-	
-	A,	// Closed mouth (M, B, P)
-	B,	// Clenched teeth (most consonants, some vowels like EE as in b[ee])
-	C,	// Open mouth (vowels like m[e]n, s[u]n, s[a]y)
-	D,	// Mouth wide open (vowels like f[a]ther, b[a]t, wh[y])
-	E,	// Rounded mouth (vowels like [o]ff)
-	F,	// Puckered lips (y[ou], b[o]y, [w]ay)
-	LastBasicShape = F,
+	//
+	//A,	// Closed mouth (M, B, P)
+	//B,	// Clenched teeth (most consonants, some vowels like EE as in b[ee])
+	//C,	// Open mouth (vowels like m[e]n, s[u]n, s[a]y)
+	//D,	// Mouth wide open (vowels like f[a]ther, b[a]t, wh[y])
+	//E,	// Rounded mouth (vowels like [o]ff)
+	//F,	// Puckered lips (y[ou], b[o]y, [w]ay)
+	//LastBasicShape = F,
 
-	// Extended shapes
+	//// Extended shapes
 
-	G,	// "F", "V"
-	H,	// "L"
-	X,	// Idle
+	//G,	// "F", "V"
+	//H,	// "L"
+	//X,	// Idle
 
+	//visemes: using Neti Map (Neti et. al 2000)
+	//TODO: remove references to LastBasicShape
+	S,
+	V2,
+	V3,
+	V4,
+	V5,
+	V6,
+	V7,
+	V8,
+	V9,
+	V10,
+	V11,
+	V12,
+	V13,
+	V14,
+	V15,
+	V16,
+	LastBasicShape = V16,
 	EndSentinel
 };
 
