@@ -8,6 +8,28 @@ using boost::optional;
 using std::string;
 using boost::filesystem::path;
 
+
+BoundedTimeline<Phone> phonemes_ts;
+
+
+std::vector<std::pair<std::pair<float, float>, std::string>> getPhonemeTimestamps()
+{
+	std::vector<std::pair<std::pair<float, float>, std::string>> timestampPhonemes;
+	
+	for (auto &value : phonemes_ts)
+	{
+		float start = value.getStart().count();
+		float end = value.getEnd().count();
+
+		auto timeRange = std::make_pair(start, end);
+		std::string phoneme = phonemeNames[value.getValue()];
+		
+		timestampPhonemes.push_back(std::make_pair(timeRange, phoneme));
+	}
+	return timestampPhonemes;
+}
+
+
 JoiningContinuousTimeline<Shape> animateAudioClip(
 	const AudioClip& audioClip,
 	const optional<string>& dialog,
@@ -18,7 +40,12 @@ JoiningContinuousTimeline<Shape> animateAudioClip(
 {
 	const BoundedTimeline<Phone> phones =
 		recognizer.recognizePhones(audioClip, dialog, maxThreadCount, progressSink);
+
+	phonemes_ts = phones;
+
 	JoiningContinuousTimeline<Shape> result = animate(phones, targetShapeSet);
+
+	getPhonemeTimestamps();
 	return result;
 }
 

@@ -78,6 +78,61 @@ enum class Phone {
 	Noise
 };
 
+
+static std::map<Phone, std::string> phonemeNames = {
+
+	/////////
+	// Vowels
+
+	{ Phone::AO,		"AO" },
+	{ Phone::AA,		"AA" },
+	{ Phone::IY,		"IY" },
+	{ Phone::UW,		"UW" },
+	{ Phone::EH,		"EH" },
+	{ Phone::IH,		"IH" },
+	{ Phone::UH,		"UH" },
+	{ Phone::AH,		"AH" },
+	{ Phone::Schwa,		"Schwa" },
+	{ Phone::AE,		"AE" },
+	{ Phone::EY,		"EY" },
+	{ Phone::AY,		"AY" },
+	{ Phone::OW,		"OW" },
+	{ Phone::AW,		"AW" },
+	{ Phone::OY,		"OY" },
+	{ Phone::ER,		"ER" },
+
+	{ Phone::P,			"P" },
+	{ Phone::B,			"B" },
+	{ Phone::T,			"T" },
+	{ Phone::D,			"D" },
+	{ Phone::K,			"K" },
+	{ Phone::G,			"G" },
+	{ Phone::CH,		"CH" },
+	{ Phone::JH,		"JH" },
+	{ Phone::F,			"F" },
+	{ Phone::V,			"V" },
+	{ Phone::TH,		"TH" },
+	{ Phone::DH,		"DH" },
+	{ Phone::S,			"S" },
+	{ Phone::Z,			"Z" },
+	{ Phone::SH,		"SH" },
+	{ Phone::ZH,		"ZH" },
+	{ Phone::HH,		"HH" },
+	{ Phone::M,			"M" },
+	{ Phone::N,			"N" },
+	{ Phone::NG,		"NG" },
+	{ Phone::L,			"L" },
+	{ Phone::R,			"R" },
+	{ Phone::Y,			"Y" },
+	{ Phone::W,			"W" },
+
+	{ Phone::Breath,	"Breath" },
+	{ Phone::Cough,		"Cough" },
+	{ Phone::Smack,		"Smack" },
+	{ Phone::Noise,		"Noise" }
+
+};
+
 class PhoneConverter : public EnumConverter<Phone> {
 public:
 	static PhoneConverter& get();

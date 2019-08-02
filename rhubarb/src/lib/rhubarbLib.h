@@ -23,3 +23,5 @@ JoiningContinuousTimeline<Shape> animateWaveFile(
 	const ShapeSet& targetShapeSet,
 	int maxThreadCount,
 	ProgressSink& progressSink);
+
+std::vector<std::pair<std::pair<float, float>, std::string>> getPhonemeTimestamps();
